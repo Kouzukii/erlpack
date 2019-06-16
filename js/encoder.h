@@ -55,7 +55,7 @@ public:
         }
 
         if (value->IsInt32() || value->IsUint32()) {
-            int number = value->Int32Value();
+			int32_t number = Nan::To<int32_t>(value).FromJust();
             if (number >= 0 && number <= 255) {
                 unsigned char num = (unsigned char)number;
                 ret = erlpack_append_small_integer(&pk, num);
@@ -64,12 +64,12 @@ public:
                 ret = erlpack_append_integer(&pk, number);
             }
             else if (value->IsUint32()) {
-                auto uNum = (unsigned long long)value->Uint32Value();
+                uint32_t uNum = Nan::To<uint32_t>(value).FromJust();
                 ret = erlpack_append_unsigned_long_long(&pk, uNum);
             }
         }
         else if(value->IsNumber()) {
-            double decimal = value->NumberValue();
+            double decimal = Nan::To<double>(value).FromJust();
             ret = erlpack_append_double(&pk, decimal);
         }
         else if (value->IsNull() || value->IsUndefined()) {

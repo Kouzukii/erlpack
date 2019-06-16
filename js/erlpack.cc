@@ -2,7 +2,9 @@
 #include "encoder.h"
 #include "decoder.h"
 
-NAN_METHOD(Pack) {
+using Nan::Export;
+
+NAN_METHOD(pack) {
     Encoder encoder;
     const int ret = encoder.pack(info[0]);
     if (ret == -1) {
@@ -19,7 +21,7 @@ NAN_METHOD(Pack) {
     info.GetReturnValue().Set(encoder.releaseAsBuffer().ToLocalChecked());
 }
 
-NAN_METHOD(Unpack) {
+NAN_METHOD(unpack) {
     if(!info[0]->IsObject()) {
         Nan::ThrowError("Attempting to unpack a non-object.");
         info.GetReturnValue().Set(Nan::Null());
@@ -39,9 +41,9 @@ NAN_METHOD(Unpack) {
     info.GetReturnValue().Set(value.ToLocalChecked());
 }
 
-void Init(Handle<Object> exports) {
-    exports->Set(Nan::New("pack").ToLocalChecked(), Nan::New<FunctionTemplate>(Pack)->GetFunction());
-    exports->Set(Nan::New("unpack").ToLocalChecked(), Nan::New<FunctionTemplate>(Unpack)->GetFunction());
+NAN_MODULE_INIT(Init) {
+	NAN_EXPORT(target, pack);
+	NAN_EXPORT(target, unpack);
 }
 
 NODE_MODULE(erlpack, Init);
